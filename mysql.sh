@@ -26,7 +26,8 @@ CHECK_ROOT(){
     then
         echo -e " $R ERROR:: To Install any Package USER should be ROOT"
         exit 1
-} 
+    fi
+}
 
 echo "script started Executing at : $TIMESTAMP" &>>$LOG_FILE_NAME
 
