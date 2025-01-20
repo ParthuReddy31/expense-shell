@@ -33,3 +33,50 @@ echo "Script started executing at: $TIMESTAMP" &>>$LOG_FILE_NAME
 
 CHECK_ROOT
 
+dnf module disable nodejs -y  &>>$LOG_FILE_NAME
+VALIDATE $? "Disabling existing default Nodejs"
+
+dnf module enable nodejs:20 -y  &>>$LOG_FILE_NAME
+VALIDATE $? "Enabling -Nodejs version-20"
+
+dnf install nodejs -y  &>>$LOG_FILE_NAME
+VALIDATE $? "Installing Nodejs"
+
+useradd expense &>>$LOG_FILE_NAME
+VALIDATE $? "Adding User"
+
+mkdir /app  &>>$LOG_FILE_NAME
+VALIDATE $? "Creating app Directory"
+
+curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip  &>>$LOG_FILE_NAME
+VALIDATE $? "Downloading Backend code"
+
+cd /app
+
+unzip /tmp/backend.zip  &>>$LOG_FILE_NAME
+VALIDATE $? "Unzipping The Code"
+
+npm install  &>>$LOG_FILE_NAME
+VALIDATE $? "Installing Dependencies"
+
+cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service
+
+#Preparing MySQL Schema
+
+dnf install mysql -y &>>$LOG_FILE_NAME
+VALIDATE $? "Installing MySQL Client"
+
+mysql -h mysql.parthudevops.space -uroot -pExpenseApp@1 < /app/schema/backend.sql  &>>$LOG_FILE_NAME
+VALIDATE $? "setting up transcations schema and table"
+
+systemctl daemon-reload &>>$LOG_FILE_NAME
+VALIDATE $? "Daemon Reloading"
+
+systemctl start backend &>>$LOG_FILE_NAME
+VALIDATE $? "Starting the Backend"
+
+systemctl enable backend &>>$LOG_FILE_NAME
+VALIDATE $? "Enabling the Backend"
+
+# systemctl restart backend
+# VALIDATE $? "Restarting the Backend"
