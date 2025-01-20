@@ -46,7 +46,7 @@ mysql -h mysql.daws82s.online -u root -pExpenseApp@1 -e 'show databases;'   &>>$
 
 if [ $? -ne 0 ]
 then
-    echo -e "$Y MySQL Root Password not setup $N"
+    echo -e "$Y MySQL Root Password not setup $N" &>>$LOG_FILE_NAME
     mysql_secure_installation --set-root-pass ExpenseApp@1
     VALIDATE $? "Setting Root Password"
 else
