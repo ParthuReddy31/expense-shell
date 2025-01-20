@@ -53,7 +53,7 @@ else
     echo -e "$G MySQL Root password already setup ... $Y SKIPPING $N"
 fi
 
-echo $( "______")
+echo "--------"
 echo $( ps -ef | grep mysqld )
-echo $( "______")
+echo "--------"
 echo $(netstat -lntp)
