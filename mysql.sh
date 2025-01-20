@@ -54,6 +54,6 @@ else
 fi
 
 $(echo "______")
-$(echo  ps -ef | grep mysqld )
+$( ps -ef | grep mysqld )
 $(echo "______")
-$(echo netstat -lntp)
+$(netstat -lntp)
