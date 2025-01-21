@@ -29,32 +29,34 @@ CHECK_ROOT(){
     fi
 }
 
+mkdir -p /var/log/expense-logs
+
 echo "script started Executing at : $TIMESTAMP" &>>$LOG_FILE_NAME
 
 CHECK_ROOT
 
-dnf install nginx -y
+dnf install nginx -y &>>$LOG_FILE_NAME
 VALIDATE $? "Installing Nginx"
 
-systemctl enable nginx
+systemctl enable nginx &>>$LOG_FILE_NAME
 VALIDATE $? "Enabling Nginx"
 
-systemctl start nginx
+systemctl start nginx &>>$LOG_FILE_NAME
 VALIDATE $? "Starting Nginx"
 
-rm -rf /usr/share/nginx/html/*
+rm -rf /usr/share/nginx/html/*  &>>$LOG_FILE_NAME
 VALIDATE $? "Removing Default HTML Pages"
 
-curl -o /tmp/frontend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
+curl -o /tmp/frontend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip  &>>$LOG_FILE_NAME
 VALIDATE $? "Downloading Frontend Code"
 
 cd /usr/share/nginx/html
 VALIDATE $? "Moving to HTML Directory"
 
-unzip /tmp/frontend.zip
+unzip /tmp/frontend.zip &>>$LOG_FILE_NAME
 VALIDATE $? "Unzipping Frontend Code"
 
-systemctl restart nginx
+systemctl restart nginx &>>$LOG_FILE_NAME
 VALIDATE $? "Restarting Nginx"
 
 echo " --------------------"
